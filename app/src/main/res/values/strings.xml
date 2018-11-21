@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name"></string>
+    <string name="button_paso">Pasos</string>
+    <string name="button_mano">Brazos</string>
+    <string name="button_salto">Planchas</string>
+    <string name="image_description">descripcion de la imagen</string>
+    <string name="pasos_app">Contador de Pasos</string>
+
+
+</resources>
