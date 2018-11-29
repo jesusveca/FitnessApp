@@ -11,18 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="42dp" />
 
-    <ImageView
-        android:id="@+id/img4"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_margin="10dp"
-        android:src="@drawable/brazo"
-        android:contentDescription="@string/image_description"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <Space
             android:layout_width="wrap_content"
@@ -31,7 +24,7 @@
 
         <Button
             android:id="@+id/btn_start_planchas"
-            android:layout_width="215dp"
+            android:layout_width="match_parent"
             android:layout_height="114dp"
             android:text="Empezar Ejercicio"
             android:textStyle="bold" />

@@ -63,6 +63,7 @@ public class Brazos extends AppCompatActivity implements SensorEventListener, Br
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             simpleDetectorBrazos.updateAccel(event.timestamp, event.values[0], event.values[1], event.values[2]);
+//            tvFlex.setText("x: "+event.values[0]+"  y: "+event.values[1]+"   z: "+event.values[2]);
         }
     }
 
@@ -83,55 +84,76 @@ class OperacionesBrazos {
     }
     public static float suma(float[] array) {
         float contador = 0;
-        for (float anArray : array) contador += anArray;
+        for (int i = 0; i < array.length; i++)
+            contador += array[i];
         return contador;
+    }
+    public static float magnitud(float[] array) {
+        float contador = 0;
+        for (int i = 0; i < array.length; i++)
+            contador += array[i] * array[i];
+        return (float) Math.sqrt(contador);
+    }
+    public static float prodPunto(float[] A, float[] B) {
+        return (float) A[0] * B[0] + A[1] * B[1] + A[2] * B[2];
     }
 }
 
 class DetectorBrazos {
-    private static final int MAT_TAMANO = 50;
-    private static final int LUZ_TAMANO = 10;
-    private int contador = 0;
-    private static final float UMBRAL_FLEXIONES = 20f;  // cambiar este umbral de acuerdo a la sensibilidad
-    private float[] MatX = new float[50];
-    private float[] MatY = new float[50];
-    private float[] MatZ = new float[50];
+    private static final int ACCEL_TAMANO = 50;
+    private static final int VEL_TAMANO = 10;
 
-    private long ultimoTimeNs = 0;
-    private float estimadoAnterior = 0;
+    private static final float UMBRAL_PASOS = 15f;  // cambiar este umbral de acuerdo a la sensibilidad
+
     private static final int STEP_DELAY_NS = 250000000;
 
-    private Brazos listener;
+    private int accelContador = 0;
+    private float[] accelX = new float[ACCEL_TAMANO];
+    private float[] accelY = new float[ACCEL_TAMANO];
+    private float[] accelZ = new float[ACCEL_TAMANO];
+    private int velContador = 0;
+    private float[] velMat = new float[VEL_TAMANO];
+    private long ultimoTimeNs = 0;
+    private float estimadoAnterior = 0;
 
-    public void registerListener(Brazos listener) {
+    private BrazosListener listener;
+
+    public void registerListener(BrazosListener listener) {
         this.listener = listener;
     }
 
     public void updateAccel(long timeNs, float x, float y, float z) {
-        float[] LuzActual = new float[3];
-        LuzActual[0] = x;
-        LuzActual[1] = y;
-        LuzActual[2] = z;
+        float[] AceleracionActual = new float[3];
+        AceleracionActual[0] = x;
+        AceleracionActual[1] = y;
+        AceleracionActual[2] = z;
 
-        contador++;
-        MatX[contador % MAT_TAMANO] = LuzActual[0];
-        MatY[contador % MAT_TAMANO] = LuzActual[1];
-        MatZ[contador % MAT_TAMANO] = LuzActual[2];
+        accelContador++; // en las siguientes operaciones actualizaremos nuestra suposion de donde estar el vector z global
+        accelX[accelContador % ACCEL_TAMANO] = AceleracionActual[0];
+        accelY[accelContador % ACCEL_TAMANO] = AceleracionActual[1];
+        accelZ[accelContador % ACCEL_TAMANO] = AceleracionActual[2];
 
-        System.out.println("Valor x: "+x+"  y: "+y+"    z: "+z);
+        float[] worldZ = new float[3];
+        worldZ[0] = PasosOperaciones.suma(accelX) / Math.min(accelContador, ACCEL_TAMANO);
+        worldZ[1] = PasosOperaciones.suma(accelY) / Math.min(accelContador, ACCEL_TAMANO);
+        worldZ[2] = PasosOperaciones.suma(accelZ) / Math.min(accelContador, ACCEL_TAMANO);
 
+        float factorNormalizacion = PasosOperaciones.magnitud(worldZ);
 
+        worldZ[0] = worldZ[0] / factorNormalizacion;
+        worldZ[1] = worldZ[1] / factorNormalizacion;
+        worldZ[2] = worldZ[2] / factorNormalizacion;
 
+        float currentZ = PasosOperaciones.prodPunto(worldZ, AceleracionActual) - factorNormalizacion;
+        velContador++;
+        velMat[velContador % VEL_TAMANO] = currentZ;
 
-//        float promedio;
-//        promedio = OperacionesBrazos.suma(MatX) /  Math.min(contador, MAT_TAMANO);
-//
-//        float estimadoActual = promedio;
-//
-//        if (estimadoActual > UMBRAL_FLEXIONES && estimadoAnterior <= UMBRAL_FLEXIONES && (timeNs - ultimoTimeNs > STEP_DELAY_NS)) {
-//            listener.flexion(timeNs);
-//            ultimoTimeNs = timeNs;
-//        }
-//        estimadoAnterior = estimadoActual;
+        float estimadoActual = PasosOperaciones.suma(velMat);
+
+        if (estimadoActual > UMBRAL_PASOS && estimadoAnterior <= UMBRAL_PASOS && (timeNs - ultimoTimeNs > STEP_DELAY_NS)) {
+            listener.flexion(timeNs);
+            ultimoTimeNs = timeNs;
+        }
+        estimadoAnterior = estimadoActual;
     }
 }

@@ -7,72 +7,42 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-
-    <ImageView
-        android:id="@+id/img1"
-        android:layout_width="match_parent"
-        android:layout_height="222dp"
-        android:src="@drawable/freak"
-        android:contentDescription="@string/image_description"/>
-
-
-    <ImageView
-        android:id="@+id/img2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/gym"
-        android:contentDescription="@string/image_description" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="162dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/button_salto"
-            android:layout_width="303dp"
+            android:layout_width="match_parent"
             android:layout_height="85dp"
             android:gravity="center"
             android:text="@string/button_salto"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/img5"
-            android:layout_width="wrap_content"
-            android:layout_height="68dp"
-            android:src="@drawable/plancha"
-            android:layout_margin="10dp"
-            android:contentDescription="@string/image_description" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="162dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/button_brazo"
-            android:layout_width="303dp"
+            android:layout_width="match_parent"
             android:layout_height="85dp"
             android:gravity="center"
             android:text="@string/button_mano"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/img4"
-            android:layout_width="wrap_content"
-            android:layout_height="68dp"
-            android:src="@drawable/brazo"
-            android:layout_margin="10dp"
-            android:contentDescription="@string/image_description" />
     </LinearLayout>
 
 
@@ -80,7 +50,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="162dp"
@@ -88,19 +58,12 @@
 
         <Button
             android:id="@+id/button_paso"
-            android:layout_width="303dp"
+            android:layout_width="match_parent"
             android:layout_height="85dp"
             android:gravity="center"
             android:text="@string/button_paso"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/img3"
-            android:layout_width="wrap_content"
-            android:layout_height="68dp"
-            android:src="@drawable/paso"
-            android:layout_margin="10dp"
-            android:contentDescription="@string/image_description" />
 
     </LinearLayout>
 

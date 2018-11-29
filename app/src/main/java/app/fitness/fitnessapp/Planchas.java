@@ -30,7 +30,7 @@ public class Planchas extends AppCompatActivity implements SensorEventListener, 
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         assert sensorManager != null;
-        luz = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        luz = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         simpleDetectorFlexiones = new DetectorFlexiones();
         simpleDetectorFlexiones.registerListener(this);
 
@@ -60,8 +60,9 @@ public class Planchas extends AppCompatActivity implements SensorEventListener, 
     }
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+        if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
             simpleDetectorFlexiones.updateAccel(event.timestamp, event.values[0]);
+            //System.out.println(event.values[0]);
         }
     }
     @Override
@@ -89,7 +90,7 @@ class DetectorFlexiones {
     private static final int MAT_TAMANO = 50;
     private static final int LUZ_TAMANO = 10;
     private int contador = 0;
-    private static final float UMBRAL_FLEXIONES = 20f;  // cambiar este umbral de acuerdo a la sensibilidad
+    private static final float UMBRAL_FLEXIONES = 2.6f;  // cambiar este umbral de acuerdo a la sensibilidad
     private float[] MatX = new float[50];
     private long ultimoTimeNs = 0;
     private float estimadoAnterior = 0;
@@ -112,6 +113,7 @@ class DetectorFlexiones {
         promedio = Operaciones.suma(MatX) /  Math.min(contador, MAT_TAMANO);
 
         float estimadoActual = promedio;
+        System.out.println(estimadoActual);
 
         if (estimadoActual > UMBRAL_FLEXIONES && estimadoAnterior <= UMBRAL_FLEXIONES && (timeNs - ultimoTimeNs > STEP_DELAY_NS)) {
             listener.flexion(timeNs);
